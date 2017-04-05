@@ -14,7 +14,7 @@ import os
 DEBUG = True
 running = True
 
-os.chdir(os.path.realpath(__file__))
+os.chdir(os.path.dirname(__file__))
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
