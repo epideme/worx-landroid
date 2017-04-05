@@ -13,7 +13,7 @@ import requests
 DEBUG = True
 running = True
 
-#os.chdir('/home/pi/repos/worx-landroid/')
+#os.chdir('/home/pi/worx-landroid/')
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
@@ -89,8 +89,17 @@ def push_message(sub_topic, value):
 
 def check_general(data):
     push_message('/battery', float(data['perc_batt']))
-    push_message('/worked_hours', float(data['ore_movimento']))
-
+    if data['batteryChargerState'] == "charging":
+      push_message('/status', (data['batteryChargerState']))
+    else:
+      push_message('/status', (data['state']))
+    push_message('/distance', float(data['distance'])/1000)
+    if data['state'] == "home":
+      push_message('/commandstatus', "gohome")
+    else:
+      push_message('/commandstatus', "start")
+    push_message('/workorder', (data['workReq']))
+    push_message('/message', (data['message']))
 
 def check_alarms(alarm_array):
     alarm_ok = 1
@@ -119,7 +128,17 @@ def check_alarms(alarm_array):
 
 # Initiate mqtt-client
 mqttc = mqtt.Client()
+if Config.get("Mqtt", "Authentication") == "yes":
+  mqttc.username_pw_set(Config.get("Mqtt", "User"), Config.get("Mqtt", "Password"))
 mqttc.on_connect = on_connect
 mqttc.on_message = on_message
 mqttc.connect(Config.get("Mqtt", "Host"), int(Config.get("Mqtt", "Port")), 30)
-mqttc.loop_forever()
+mqttc.loop_start()
+
+# Continuous automatic checking
+while 1:
+  if Config.get("Mqtt", "Autocheck") == "yes":
+    send_check()
+    time.sleep(Config.get("Mqtt", "Interval"))
+  else:
+    time.sleep(60)
