@@ -139,6 +139,6 @@ mqttc.loop_start()
 while 1:
   if Config.get("Mqtt", "Autocheck") == "yes":
     send_check()
-    time.sleep(Config.get("Mqtt", "Interval"))
+    time.sleep(float(Config.get("Mqtt", "Interval")))
   else:
     time.sleep(60)
