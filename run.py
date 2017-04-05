@@ -9,11 +9,12 @@ except:
 import time
 import paho.mqtt.client as mqtt
 import requests
+import os
 
 DEBUG = True
 running = True
 
-#os.chdir('/home/pi/worx-landroid/')
+os.chdir(os.path.realpath(__file__))
 
 Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
