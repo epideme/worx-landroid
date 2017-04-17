@@ -80,7 +80,7 @@ def send_check():
         print("Connection timeout")
     except requests.exceptions.RequestException:
         print("Connection error")
-
+        push_message('/status', 'no connection')
 
 def push_message(sub_topic, value):
     # Push mqtt message
@@ -95,12 +95,13 @@ def check_general(data):
     else:
       push_message('/status', (data['state']))
     push_message('/distance', float(data['distance'])/1000)
-    if data['state'] == "home":
+    if data['state'] == "home" or data['state'] == "idle":
       push_message('/commandstatus', "gohome")
     else:
       push_message('/commandstatus', "start")
     push_message('/workorder', (data['workReq']))
     push_message('/message', (data['message']))
+    push_message('/workarea', (data['area_in_lavoro']))
 
 def check_alarms(alarm_array):
     alarm_ok = 1
