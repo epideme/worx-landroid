@@ -20,7 +20,7 @@ Config = ConfigParser.ConfigParser()
 Config.read('config.ini')
 
 
-def on_connect(client, userdata, rc):
+def on_connect(self, client, userdata, rc):
     debug_print("Connected with result code" + str(rc))
     client.subscribe(Config.get("Mqtt", "BaseTopic") + '/command/#')
 
