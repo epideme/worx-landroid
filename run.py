@@ -22,7 +22,7 @@ Config.read('config.ini')
 
 def on_connect(self, client, userdata, rc):
     debug_print("Connected with result code" + str(rc))
-    client.subscribe(Config.get("Mqtt", "BaseTopic") + '/command/#')
+    self.subscribe(Config.get("Mqtt", "BaseTopic") + '/command/#')
 
 
 def on_message(client, userdata, msg):
